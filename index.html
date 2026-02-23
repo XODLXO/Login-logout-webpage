@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simple Auth App</title>
+    <style>
+        body { font-family: sans-serif; display: flex; justify-content: center; padding-top: 50px; background: #f4f4f9; }
+        .card { background: white; padding: 2rem; border-radius: 8px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); width: 300px; }
+        h2 { margin-top: 0; color: #333; }
+        input { width: 100%; padding: 10px; margin: 10px 0; border: 1px solid #ddd; border-radius: 4px; box-sizing: border-box; }
+        button { width: 100%; padding: 10px; background: #007bff; color: white; border: none; border-radius: 4px; cursor: pointer; }
+        button:hover { background: #0056b3; }
+        .toggle-link { font-size: 0.8rem; color: #007bff; cursor: pointer; text-decoration: underline; display: block; margin-top: 10px; text-align: center; }
+        .hidden { display: none; }
+        #welcome-section { text-align: center; }
+        .logout-btn { background: #dc3545; margin-top: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="card">
+        <div id="register-section">
+            <h2>Register</h2>
+            <input type="email" id="reg-email" placeholder="Email">
+            <input type="password" id="reg-pass" placeholder="Password">
+            <button onclick="register()">Create Account</button>
+            <span class="toggle-link" onclick="showLogin()">Already have an account? Login</span>
+        </div>
+
+        <div id="login-section" class="hidden">
+            <h2>Login</h2>
+            <input type="email" id="login-email" placeholder="Email">
+            <input type="password" id="login-pass" placeholder="Password">
+            <button onclick="login()">Login</button>
+            <span class="toggle-link" onclick="showRegister()">Need an account? Register</span>
+        </div>
+
+        <div id="welcome-section" class="hidden">
+            <h2>Welcome!</h2>
+            <p>Hello, <strong id="user-display"></strong>!</p>
+            <p>You are successfully logged in.</p>
+            <button class="logout-btn" onclick="logout()">Logout</button>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const regSection = document.getElementById('register-section');
+        const loginSection = document.getElementById('login-section');
+        const welcomeSection = document.getElementById('welcome-section');
+        const userDisplay = document.getElementById('user-display');
+
+        // Navigation Functions
+        function showLogin() {
+            regSection.classList.add('hidden');
+            loginSection.classList.remove('hidden');
+        }
+
+        function showRegister() {
+            loginSection.classList.add('hidden');
+            regSection.classList.remove('hidden');
+        }
+
+        // Logic Functions
+        function register() {
+            const email = document.getElementById('reg-email').value;
+            const pass = document.getElementById('reg-pass').value;
+
+            if (email && pass) {
+                localStorage.setItem('userEmail', email);
+                localStorage.setItem('userPass', pass);
+                alert("Account created! Please login.");
+                showLogin();
+            } else {
+                alert("Please fill in all fields.");
+            }
+        }
+
+        function login() {
+            const email = document.getElementById('login-email').value;
+            const pass = document.getElementById('login-pass').value;
+
+            const storedEmail = localStorage.getItem('userEmail');
+            const storedPass = localStorage.getItem('userPass');
+
+            if (email === storedEmail && pass === storedPass) {
+                userDisplay.innerText = email;
+                loginSection.classList.add('hidden');
+                welcomeSection.classList.remove('hidden');
+            } else {
+                alert("Invalid email or password.");
+            }
+        }
+
+        function logout() {
+            welcomeSection.classList.add('hidden');
+            loginSection.classList.remove('hidden');
+            // Clear inputs for security
+            document.getElementById('login-email').value = "";
+            document.getElementById('login-pass').value = "";
+        }
+    </script>
+</body>
+</html>
